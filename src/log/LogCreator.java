@@ -21,10 +21,8 @@ public class LogCreator extends javax.swing.JFrame {
     private static JButton print;
     private static JScrollBar vertical;
     public static int pixelized = 0;
-    private static updateThread thread;
 
     public LogCreator() {
-        thread = new updateThread(this);
         this.setTitle("debug log");
         this.setSize(500, 400);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -84,7 +82,6 @@ public class LogCreator extends javax.swing.JFrame {
         this.add(scrollPane);
         this.add(print);
         this.add(exit);
-        thread.start();
     }
 
     public static void scrollMax() {
@@ -97,7 +94,6 @@ public class LogCreator extends javax.swing.JFrame {
     }
 
     public static void setButtonsEnabled(boolean enabled) {
-        thread.endThread();
         print.setEnabled(enabled);
         exit.setEnabled(enabled);
     }
@@ -106,20 +102,20 @@ public class LogCreator extends javax.swing.JFrame {
         File directoryPath = new File(path);
         File[] filesList = directoryPath.listFiles();
 
+        assert filesList != null;
         for (File file : filesList) {
             String imagePath = file.getAbsolutePath();
             if (imagePath.toLowerCase().endsWith(".png") || imagePath.toLowerCase().endsWith(".jpg")) {
-                Debug.println("image", imagePath);
-                log += "image: " + imagePath + "\n";
+                area.append("image: " + imagePath + "\n");
                 if (pixelizer) {
                     try {
                         long start = System.nanoTime();
                         Pixelizer.getAveragePixel(imagePath, replace);
                         long elapsedTime = System.nanoTime() - start;
-                        log += "Time to complete: " + (double) elapsedTime / 1_000_000_000 +"s\n";
+                        area.append("Time to complete: " + (double) elapsedTime / 1_000_000_000 +"s\n");
                         pixelized++;
                     } catch (IOException e) {
-                        log += e.getMessage();
+                        area.append(e.getMessage());
                         throw new RuntimeException(e);
                     }
                 } else {
@@ -128,21 +124,19 @@ public class LogCreator extends javax.swing.JFrame {
                         long start = System.nanoTime();
                         long elapsedTime = System.nanoTime() - start;
                         ImageIO.write(source, "PNG", f);
-                        log += "Time to complete: " + elapsedTime + "ns\n";
+                        area.append("Time to complete: " + elapsedTime + "ns\n");
                         pixelized++;
                     } catch (IOException e) {
-                        log += e.getMessage();
+                        area.append(e.getMessage());
                         throw new RuntimeException(e);
                     }
                 }
             } else {
                 if (file.isDirectory()) {
-                    Debug.println("folder", imagePath);
-                    log += "folder" + imagePath + "\n";
+                    area.append("folder" + imagePath + "\n");
                     dig(source, imagePath, pixelizer,replace);
                 } else {
-                    Debug.println("error", "Unknown file type");
-                    log += "Unknown file type: " + imagePath + "\n";
+                    area.append("Unknown file type: " + imagePath + "\n");
                 }
             }
         }
@@ -165,6 +159,6 @@ public class LogCreator extends javax.swing.JFrame {
     }
 
     public void setText(String text) {
-        area.setText(text);
+        area.append(text);
     }
 }

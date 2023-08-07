@@ -105,7 +105,7 @@ public class Main {
                 twitterLink.setBounds(50, 35, 300, 30);
                 JLabel email = new JLabel("Email: kagehikaruart@gmail.com");
                 email.setBounds(10, 55, 300, 30);
-                JLabel version = new JLabel("Version: 1.1.2");
+                JLabel version = new JLabel("Version: 1.1.3");
                 version.setBounds(10, 75, 300, 30);
 
                 jDialog.setLayout(null);
@@ -139,7 +139,8 @@ public class Main {
         pathSearchButton = new JButton(new AbstractAction("...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final JFileChooser fc = new JFileChooser();
+                String userDir = System.getProperty("user.home");
+                final JFileChooser fc = new JFileChooser(userDir + "/Desktop");
                 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 int response = fc.showOpenDialog(null);
                 if (response == JFileChooser.APPROVE_OPTION) {
@@ -162,7 +163,8 @@ public class Main {
         sourceSearchButton = new JButton(new AbstractAction("...") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final JFileChooser fc = new JFileChooser();
+                String userDir = System.getProperty("user.home");
+                final JFileChooser fc = new JFileChooser(userDir + "/Desktop");
                 fc.setFileFilter(new FileNameExtensionFilter("Image file", "jpg", "jpeg", "png"));
                 int response = fc.showOpenDialog(null);
                 if (response == JFileChooser.APPROVE_OPTION) {
