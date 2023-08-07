@@ -157,8 +157,4 @@ public class LogCreator extends javax.swing.JFrame {
     public static void setLog(String newLog) {
         log = newLog;
     }
-
-    public void setText(String text) {
-        area.append(text);
-    }
 }

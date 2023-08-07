@@ -29,8 +29,6 @@ public class Main {
     private static JCheckBox replaceBox;
     private static JLabel sourceImgLabel;
     private static final LogCreator logCreator = new LogCreator();
-    private final static JTextArea area = new JTextArea();
-
 
     public static void main(String[] args) {
         makeFrame();
@@ -237,13 +235,13 @@ public class Main {
         int result = JOptionPane.showConfirmDialog(null, "You are about to change every image in the folder (" + pathString + ").\nThis action can't be stopped, nor reverted!\nAre you sure you want to continue?", "Are you sure?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.YES_OPTION) {
             Debug.println("Info", "starting program");
-            pathString.replace("\\", "/");
+            pathString = pathString.replace("\\", "/");
 
 
             Thread thread = new Thread(() -> {
                 BufferedImage image = null;
                 if (sourceString != null) {
-                    sourceString.replace("\\", "/");
+                    sourceString = sourceString.replace("\\", "/");
                     try {
                         image = ImageIO.read(new File(sourceString));
                     } catch (IOException ex) {
