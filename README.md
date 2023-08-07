@@ -14,5 +14,5 @@ The Pixelizer has 2 modes.
 
 Both of these modes where made for fun and are not to be used on anybody else's pc without their consent.
 
-#Download
-
+# Download
+<a id="raw-url" href="https://github.com/SpyroManiac/Pixelizer/raw/1.1.3/out/artifacts/Pixelator_jar/Pixelator.jar">Download FILE</a>
