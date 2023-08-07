@@ -2,10 +2,12 @@
 The Pixelizer has 2 modes.
 
 # Mode 1: Pixelizer
-  Turns images in a source folder and subfolders into pixels, which are the original images average RGB values of all pixels.
-  this can not be undone, so only check replace if you know that you:
-    A) Have a backup of the images in the folders you are replacing.
-    B) the images are not important.
+Turns images in a source folder and subfolders into pixels, which are the original images average RGB values of all pixels.
+
+***this can not be undone, so only check replace if you know that:***
+  	
+- You have a backup of the images in the folders you are replacing.
+- The images are not important.
 
 # Mode 2: Replacer
   A very simple side of the program that replaces all images in a folder with a source image.
