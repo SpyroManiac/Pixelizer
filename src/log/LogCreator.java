@@ -21,6 +21,8 @@ public class LogCreator extends javax.swing.JFrame {
     private static JButton print;
     private static JScrollBar vertical;
     public static int pixelized = 0;
+    private static JProgressBar progressBar;
+
 
     public LogCreator() {
         this.setTitle("debug log");
@@ -34,8 +36,12 @@ public class LogCreator extends javax.swing.JFrame {
         scrollPane.setBounds(10, 10, 465, 300);
         scrollPane.setAutoscrolls(true);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+        progressBar.setBounds(120, 320, 245, 30);
         vertical = scrollPane.getVerticalScrollBar();
-        vertical.setValue( vertical.getMaximum() );
+        vertical.setValue(vertical.getMaximum());
 
         print = new JButton(new AbstractAction("print log") {
             @Override
@@ -45,11 +51,11 @@ public class LogCreator extends javax.swing.JFrame {
                 int response = fc.showSaveDialog(null);
                 if (response == JFileChooser.APPROVE_OPTION) {
                     String pathString = fc.getSelectedFile().toString();
-                    if(pathString.isEmpty()) {
+                    if (pathString.isEmpty()) {
                         JOptionPane.showMessageDialog(null, "Please enter a valid name", "warning", JOptionPane.WARNING_MESSAGE);
                         return;
                     }
-                    if(!pathString.endsWith(".txt")) {
+                    if (!pathString.endsWith(".txt")) {
                         pathString += ".txt";
                     }
                     Debug.println("debug log: ", pathString);
@@ -66,7 +72,7 @@ public class LogCreator extends javax.swing.JFrame {
                 }
             }
         });
-        print.setBounds(10,320,100,30);
+        print.setBounds(10, 320, 100, 30);
         print.setEnabled(false);
 
         exit = new JButton(new AbstractAction("exit") {
@@ -75,18 +81,20 @@ public class LogCreator extends javax.swing.JFrame {
                 closeWindow();
             }
         });
-        exit.setBounds(374,320,100,30);
+        exit.setBounds(374, 320, 100, 30);
         exit.setEnabled(false);
 
         this.setLayout(null);
         this.add(scrollPane);
         this.add(print);
         this.add(exit);
+        this.add(progressBar);
     }
 
     public static void scrollMax() {
         vertical.setValue(vertical.getMaximum());
     }
+
     private void closeWindow() {
         area.setText("");
         setButtonsEnabled(false);
@@ -98,7 +106,7 @@ public class LogCreator extends javax.swing.JFrame {
         exit.setEnabled(enabled);
     }
 
-    public void dig(BufferedImage source, String path, boolean pixelizer, boolean replace) throws InterruptedException {
+    public void dig(BufferedImage source, String path, boolean pixelizer, boolean sorter, boolean randomizer, boolean replace) throws InterruptedException {
         File directoryPath = new File(path);
         File[] filesList = directoryPath.listFiles();
 
@@ -109,11 +117,25 @@ public class LogCreator extends javax.swing.JFrame {
                 area.append("image: " + imagePath + "\n");
                 if (pixelizer) {
                     try {
-                        long start = System.nanoTime();
-                        Pixelizer.getAveragePixel(imagePath, replace);
-                        long elapsedTime = System.nanoTime() - start;
-                        area.append("Time to complete: " + (double) elapsedTime / 1_000_000_000 +"s\n");
-                        pixelized++;
+                        if (sorter) {
+                            long start = System.nanoTime();
+                            Pixelizer.pixelSort(imagePath, replace, progressBar);
+                            long elapsedTime = System.nanoTime() - start;
+                            area.append("Time to complete: " + (double) elapsedTime / 1_000_000_000 + "s\n");
+                            pixelized++;
+                        } else if (randomizer) {
+                            long start = System.nanoTime();
+                            Pixelizer.pixelRandomizer(imagePath, replace, progressBar);
+                            long elapsedTime = System.nanoTime() - start;
+                            area.append("Time to complete: " + (double) elapsedTime / 1_000_000_000 + "s\n");
+                            pixelized++;
+                        } else {
+                            long start = System.nanoTime();
+                            Pixelizer.getAveragePixel(imagePath, replace, progressBar);
+                            long elapsedTime = System.nanoTime() - start;
+                            area.append("Time to complete: " + (double) elapsedTime / 1_000_000_000 + "s\n");
+                            pixelized++;
+                        }
                     } catch (IOException e) {
                         area.append(e.getMessage());
                         throw new RuntimeException(e);
@@ -134,7 +156,7 @@ public class LogCreator extends javax.swing.JFrame {
             } else {
                 if (file.isDirectory()) {
                     area.append("folder" + imagePath + "\n");
-                    dig(source, imagePath, pixelizer,replace);
+                    dig(source, imagePath, pixelizer, sorter, randomizer, replace);
                 } else {
                     area.append("Unknown file type: " + imagePath + "\n");
                 }

@@ -19,6 +19,8 @@ import static java.lang.Thread.sleep;
 
 public class Main {
     private static boolean pixelizer = true;
+    private static boolean sorter = false;
+    private static boolean randomizer = false;
     private static String pathString;
     private static String sourceString;
     private static JFrame frame;
@@ -42,6 +44,7 @@ public class Main {
         frame.setSize(500, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
         JButton pathSearchButton;
         JLabel pathLabel;
 
@@ -60,6 +63,22 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 refresh(frame, false);
+            }
+        });
+        JMenuItem m13 = new JMenuItem(new AbstractAction("Pixel sorter") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refresh(frame, true);
+                frame.setTitle("Pixel sorter");
+                sorter = true;
+            }
+        });
+        JMenuItem m14 = new JMenuItem(new AbstractAction("Pixel randomizer") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refresh(frame, true);
+                frame.setTitle("Pixel randomizer");
+                randomizer = true;
             }
         });
 
@@ -103,7 +122,7 @@ public class Main {
                 twitterLink.setBounds(50, 35, 300, 30);
                 JLabel email = new JLabel("Email: kagehikaruart@gmail.com");
                 email.setBounds(10, 55, 300, 30);
-                JLabel version = new JLabel("Version: 1.1.3");
+                JLabel version = new JLabel("Version: 1.2.0");
                 version.setBounds(10, 75, 300, 30);
 
                 jDialog.setLayout(null);
@@ -118,6 +137,8 @@ public class Main {
 
         m1.add(m11);
         m1.add(m12);
+        m1.add(m13);
+        m1.add(m14);
         mb.add(m1);
 
         m2.add(m21);
@@ -185,6 +206,8 @@ public class Main {
                 Debug.println("Info", "target: " + pathString);
                 Debug.println("Info", "source: " + sourceString);
                 Debug.println("Info", "pixelizer?: " + pixelizer);
+                Debug.println("Info", "sorter?: " + sorter);
+                Debug.println("Info", "randomizer?: " + randomizer);
                 Debug.println("Info", "Replace: " + replaceBox.isSelected());
 
                 if (pathString == null) {
@@ -254,15 +277,12 @@ public class Main {
                     LogCreator.setLog("");
                     LogCreator.pixelized = 0;
                     logCreator.setVisible(true);
-                    logCreator.dig(image, pathString, pixelizer, replaceBox.isSelected());
-                    LogCreator.setLog(LogCreator.getLog() + "\n\nEnd of operation!\nFiles affected: " + LogCreator.pixelized);
+                    logCreator.dig(image, pathString, pixelizer, sorter, randomizer, replaceBox.isSelected());
+                    LogCreator.area.append(LogCreator.getLog() + "\n\nEnd of operation!\nFiles affected: " + LogCreator.pixelized);
                     LogCreator.setButtonsEnabled(true);
-                    try
-                    {
+                    try {
                         sleep(200);
-                    }
-                    catch (InterruptedException e)
-                    {
+                    } catch (InterruptedException e) {
                         //e.printStackTrace();
                     }
                     LogCreator.scrollMax();
@@ -325,6 +345,8 @@ public class Main {
         pixelizer = pixelate;
         pathString = null;
         sourceString = null;
+        sorter = false;
+        randomizer = false;
 
         if (pixelate) {
             executeButton.setBounds(374, 70, 100, 30);
