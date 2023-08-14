@@ -1,7 +1,5 @@
 package pixelizer;
 
-import sun.security.util.Debug;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
